@@ -8,8 +8,26 @@
             <div class="container">
                 <form>
                     <div class="form-group">
-                        <label for="polynomial">Polynomial</label>
-                        <input type="number" class="form-control" id="polynomial" aria-describedby="polynomial">
+                        <label for="polynomial">Polynomial Degree</label>
+                        <div id="poly-selector" class="btn-group btn-group-toggle btn-group-lg" data-toggle="buttons" role="group" aria-label="polynomial-degree-selector">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" name="polynomial" id="linear" value="1" checked> x
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="polynomial" id="quadratic" value="2"> x<sup>2</sup>
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="polynomial" id="cubic" value="3"> x<sup>3</sup>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customRange1">Learning Rate</label>
+                        <input type="range" class="custom-range" id="alpha" min="1" max="50" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="customRange1">Iterations</label>
+                        <input type="range" class="custom-range" id="iters" min="100" max="10000" step="1">
                     </div>
                 </form>
             </div>

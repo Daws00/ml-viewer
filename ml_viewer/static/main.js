@@ -49,75 +49,73 @@ var y_coords = [];
 var theta = [];
 
 var alpha = 0.15;
-var num_iter = 10000;
-var poly = 3;
+var iterations = 10000;
+var poly = 1;
 
-$(document).ready(function(e) {
+$(document).ready(function() {
     window.chart = new Chart(ctx, config);
     window.chart.update();
+
     canvas.click(function(e) {
         mousePoint = Chart.helpers.getRelativePosition(e, chart);
         var x_loc = chart.scales['x-axis-0'].getValueForPixel(mousePoint.x);
         var y_loc = chart.scales['y-axis-0'].getValueForPixel(mousePoint.y);
         loc = {x: x_loc, y: y_loc};
         push_location(loc);
-        if(x_coords.length <= 1) return;
         window.chart.update();
 
-        theta = new Array(poly+1).fill(1);
-        var data = {"theta":theta,"X":x_coords,"Y":y_coords, "alpha":alpha, "num_iter":num_iter, "poly": poly};
-        if(x_coords.length > 1){
-            $.ajax({
-                type: 'POST',
-                url: $SCRIPT_ROOT + '/_gradient_descent',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(data),
-                cache: false,
-                success: function(result) {
-                    var h = [];
-                    var theta = [];
-                    for(var t = 0; t < result.theta.length; t++) {
-                        theta.push(parseFloat(result.theta[t]));
-                    }
-                    var sigma = [];
-                    for(var s = 0; s < result.sigma.length; s++) {
-                        sigma.push(parseFloat(result.sigma[s]));
-                    }
-                    var mu = [];
-                    for(var m = 0; m < result.mu.length; m++) {
-                        mu.push(parseFloat(result.mu[m]));
-                    }
-                    console.log(theta);
-                    populate_hypothesis(h, theta, mu, sigma);
-                    config.data.datasets[0].data = h;
-                    window.chart.update();
-                }
-            });
-        }
+        compute_hypothesis();
+    });
+
+
+    $('input[type=radio][name=polynomial]').change(function() {
+        poly = Number(this.value);
+        compute_hypothesis();
+    });
+
+    $('#alpha').change(function() {
+        alpha = Number(this.value) / 100;
+        console.log(alpha);
+        compute_hypothesis();
+    });
+
+    $('#iters').change(function() {
+        iterations = Number(this.value);
+        compute_hypothesis();
     });
 });
 
-function gradient_descent(X, y, theta, alpha, num_iter){
-    m = y.size;
-    for (var i = 0; i < num_iter; i++){
-        var h = X.dot(theta);
-        var loss = h.sub(y);
-        var gradient = (X.transpose().dot(loss)).div(m);
-        theta = tf.sub(theta, tf.mul(alpha, gradient));
-    }
-    return theta;
-}
-
-function feature_normalize(X){
-    var X_norm = X;
-
-    var moments = tf.moments(X_norm);
-    mu = moments.mean;
-    sigma = moments.variance.sqrt();
-    X_norm = X_norm.sub(mu);
-    X_norm = X_norm.sub(mu).div(sigma);
-    return {normal: X_norm,mu: mu,sigma: sigma};
+function compute_hypothesis() {
+    if(x_coords.length <= 1) return;
+    theta = new Array(poly+1).fill(1);
+    var data = {"theta":theta,"X":x_coords,"Y":y_coords, "alpha":alpha, "num_iter":iterations, "poly": poly};
+    $.ajax({
+        type: 'POST',
+        url: $SCRIPT_ROOT + '/_gradient_descent',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        cache: false,
+        success: function(result) {
+            var h = [];
+            var theta = [];
+            for(var t = 0; t < result.theta.length; t++) {
+                theta.push(parseFloat(result.theta[t]));
+            }
+            var sigma = [];
+            for(var s = 0; s < result.sigma.length; s++) {
+                sigma.push(parseFloat(result.sigma[s]));
+            }
+            var mu = [];
+            for(var m = 0; m < result.mu.length; m++) {
+                mu.push(parseFloat(result.mu[m]));
+            }
+            console.log(theta);
+            populate_hypothesis(h, theta, mu, sigma);
+            config.data.datasets[0].data = h;
+            window.chart.update();
+        }
+    });
 }
 
 function push_location(loc){
@@ -137,6 +135,5 @@ function populate_hypothesis(h, theta, mu, sigma){
         }
         h.push({x: x, y: y});
     }
-    console.log(h);
     return h;
 }

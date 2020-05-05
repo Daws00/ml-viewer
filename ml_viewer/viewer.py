@@ -15,6 +15,8 @@ def index():
 @bp.route('/_gradient_descent', methods=['GET','POST'])
 def _gradient_descent():
     data = request.json
+    if(len(data['X']) <= 1):
+        return jsonify({'error':'not enough data'});
     X = np.array([data['X']]).T
     y = np.array([data['Y']]).T
     theta_guess = np.array([data['theta']]).T
