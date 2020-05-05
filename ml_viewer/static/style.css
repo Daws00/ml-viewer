@@ -1,0 +1,23 @@
+html,
+body {                /* body - or any parent wrapper */
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+}
+
+body {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+main {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.chart-container {
+    height:100%;
+}

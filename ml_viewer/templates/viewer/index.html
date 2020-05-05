@@ -1,0 +1,27 @@
+<!doctype HTML>
+{% extends 'base.html' %}
+{% block title %}Visualize machine learning algorithms{% endblock %}
+{%block main%}
+<div class="container-fluid p-0 h-100">
+    <div class="row h-100">
+        <div id="sidebar" class="col-md-2">
+            <div class="container">
+                <form>
+                    <div class="form-group">
+                        <label for="polynomial">Polynomial</label>
+                        <input type="number" class="form-control" id="polynomial" aria-describedby="polynomial">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="chart" class="col-md-10 h-100">
+            <div class="chart-container">
+                <canvas id="plotter"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{%block js%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+{%endblock%}
