@@ -75,7 +75,6 @@ $(document).ready(function() {
 
     $('#alpha').change(function() {
         alpha = Number(this.value) / 100;
-        console.log(alpha);
         compute_hypothesis();
     });
 
