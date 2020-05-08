@@ -12,6 +12,10 @@ bp = Blueprint('viewer', __name__)
 def index():
     return render_template('viewer/index.html')
 
+@bp.route('/test')
+def test():
+    return render_template('viewer/test.html')
+
 @bp.route('/_gradient_descent', methods=['GET','POST'])
 def _gradient_descent():
     data = request.json

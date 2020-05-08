@@ -1,61 +1,35 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-<a class="navbar-brand" href="#">ML_Viewer</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="container">
+  <h2>Dynamic Tabs</h2>
+  <p>To make the tabs toggleable, add the data-toggle="tab" attribute to each link. Then add a .tab-pane class with a unique ID for every tab and wrap them inside a div element with class .tab-content.</p>
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+    <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+    <li><a data-toggle="tab" href="#menu3">Menu 3</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
     </div>
-</nav>
-<div id="wrapper">
-    <div id="sidebar-wrapper" class="col-lg-2 h-100">
-        <div id="sidebar">
-            <ul class="nav list-group">
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 1</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 2</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 3</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 4</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 5</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 6</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 9</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 10</a>
-                </li>
-                <li class="nav-item"> <a class="list-group-item nav-link" href="#"><i class="icon-home icon-1x"></i>Sidebar Item 11</a>
-                </li>
-            </ul>
-        </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div>
-    <div id="main-wrapper" class="col-lg-10 h-100 float-right">
-        <div id="main" class="pt-3">
-            <h1>Hi There.</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget magna et ante suscipit lacinia. Aenean porttitor velit id pretium blandit. Aenean ut sodales ante. Ut faucibus ornare venenatis. Duis sit amet arcu eros. Mauris volutpat
-                vestibulum congue. Nam volutpat, urna eu varius dapibus, velit nisl bibendum lorem, sit amet dapibus sem dolor eu felis. Nulla tincidunt augue vel dolor convallis lobortis. Nunc nibh dolor, tincidunt elementum lorem id, porta imperdiet
-                neque. Quisque egestas lacus nec magna mattis aliquam. Nunc eget orci odio. Quisque neque odio, lobortis a orci ut, tempus feugiat tortor. Quisque et tincidunt arcu. Sed vel accumsan risus. Quisque enim ipsum, luctus vitae ultrices at,
-                vulputate eu lo mollis at bibendum in, condimentum nec mi. Ut auctor consectetur erat, eget bibendum erat tristique ac. Nullam nisl sapien, pretium at enim nec, tincidunt molestie lacus. Mauris venenatis augue velit,
-                eu malesuada velit faucibus id. Suspendisse ac suscipit magna. Integer elit risus, rutrum a mi vitae, pharetra tristique mi. Ut semper euismod lacus vel dignissim. Maecenas quis erat eget dui vehicula aliquam. Praesent sed dolor euismod,
-                condimentum ante quis, molestie orci. Ut vel venenatis nunc, ut porta lacus. Donec ligula felis, tristique ut sollicitudin eget, commodo vel augue. Maecenas quis enim ac elit bibendum tristique. Suspendisse a vestibulum dui. Donec molestie
-                enim vel ornare fermen non nisl est. Suspendisse potenti.</p>
-        </div>
-        <div class="col-lg-12 footer">
-            <ul class="nav">
-                <li class="nav-item"><a href="" class="nav-link">Link</a>
-                </li>
-                <li class="nav-item"><a href="" class="nav-link">Link</a>
-                </li>
-                <li class="nav-item"><a href="" class="nav-link">Link</a>
-                </li>
-            </ul>
-        </div>
+    <div id="menu2" class="tab-pane fade">
+      <h3>Menu 2</h3>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
     </div>
+    <div id="menu3" class="tab-pane fade">
+      <h3>Menu 3</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+  </div>
 </div>
+{% endblock %}
