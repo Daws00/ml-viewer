@@ -25,7 +25,7 @@ def _gradient_descent():
     y = np.array([data['Y']]).T
     theta_guess = np.array([data['theta']]).T
     alpha = data['alpha']
-    num_iter = data['num_iter']
+    num_iter = min(data['num_iter'],5000);
 
     tempX = X
     for i in range(1,data['poly']):

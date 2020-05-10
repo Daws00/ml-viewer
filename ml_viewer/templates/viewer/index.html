@@ -4,19 +4,16 @@
 {% block header %}
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#linear" role="tab" aria-controls="home" aria-selected="true">Linear Regression</a>
+        <a class="nav-link active" id="regress-tab" data-toggle="tab" href="#regress" role="tab" aria-controls="regression" aria-selected="true">Linear Regression</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#classification" role="tab" aria-controls="profile" aria-selected="false">Classification</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+        <a class="nav-link" id="classify-tab" data-toggle="tab" href="#classify" role="tab" aria-controls="classify" aria-selected="false">Classification</a>
     </li>
 </ul>
 {% endblock %}
 {%block main%}
 <div class="tab-content h-100">
-    <div id="linear" class="container-fluid h-100 tab-pane active">
+    <div id="regress" class="container-fluid h-100 tab-pane active">
         <div class="row h-100">
             <div class="col-md-2">
                 <form>
@@ -46,12 +43,12 @@
             </div>
             <div class="col-md-10 h-100">
                 <div class="chart-container">
-                    <canvas id="plotter"></canvas>
+                    <canvas id="regress-plot"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <div id="classification" class="container-fluid h-100 tab-pane active">
+    <div id="classify" class="container-fluid h-100 tab-pane active">
         <div class="row h-100">
             <div class="col-md-2">
                 <form>
@@ -75,13 +72,13 @@
                     </div>
                     <div class="form-group">
                         <label for="customRange1">Iterations</label>
-                        <input type="range" class="custom-range" id="iters" min="100" max="10000" step="1">
+                        <input type="range" class="custom-range" id="iters" min="100" max="5000" step="1">
                     </div>
                 </form>
             </div>
             <div class="col-md-10 h-100">
                 <div class="chart-container">
-                    <canvas id="plotter"></canvas>
+                    <canvas id="classify-plot"></canvas>
                 </div>
             </div>
         </div>
@@ -90,4 +87,9 @@
 {%endblock%}
 {%block js%}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="{{ url_for('static', filename='plot.js') }}"></script>
+<script src="{{ url_for('static', filename='clean_regress.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='classify.js') }}"></script> -->
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
 {%endblock%}

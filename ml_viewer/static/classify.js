@@ -1,69 +1,76 @@
-var config = {
+var canvas = $("#classify-plot");
+var ctx = canvas[0].getContext("2d");
+var classify_set0_coords = {x: [], y: []};
+var classify_set1_coords = {x: [], y: []};
+var theta = [];
+
+var classify_config = {
     type: 'line',
     data: {
         datasets: [
+            {
+                data: [],
+                fill: false,
+            },
             {
                 data: [],
                 type: 'scatter'
             },
             {
                 data: [],
-                fill: false,
-            },]
+                type: 'scatter'
+            }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            },
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        drawBorder: false,
-                    },
-                    type: 'linear',
-                    ticks: {
-                        min: 0,
-                        max: 1000
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        drawBorder: false,
-                    },
-                    ticks: {
-                        min: 0,
-                        max: 1000
-                    }
-                }]
-            },
-            tooltips: {
-                enabled: false,
-            },
-        }
+        scales: {
+            xAxes: [{
+                gridLines: {
+                    drawBorder: false,
+                },
+                type: 'linear',
+                ticks: {
+                    min: 0,
+                    max: 1000
+                }
+            }],
+            yAxes: [{
+                gridLines: {
+                    drawBorder: false,
+                },
+                ticks: {
+                    min: 0,
+                    max: 1000
+                }
+            }]
+        },
+        tooltips: {
+            enabled: false,
+        },
+    }
 };
 
+var alpha = 0.15;
+var iterations = 10000;
+var poly = 1;
+
 $(document).ready(function() {
-    var canvas = $("#regress-plot");
-    var ctx = canvas[0].getContext("2d");
-    var regress_coords = {x: [], y: []};
-    var theta = [];
+    console.log("2");
 
-    var alpha = 0.15;
-    var iterations = 10000;
-    var poly = 1;
-
-    window.regress = new Chart(ctx, config);
-    window.regress.update();
+    window.chart = new Chart(ctx, classify_config);
+    window.chart.update();
 
     canvas.click(function(e) {
-        mousePoint = Chart.helpers.getRelativePosition(e, regress);
-        var x_loc = regress.scales['x-axis-0'].getValueForPixel(mousePoint.x);
-        var y_loc = regress.scales['y-axis-0'].getValueForPixel(mousePoint.y);
+        mousePoint = Chart.helpers.getRelativePosition(e, chart);
+        var x_loc = chart.scales['x-axis-0'].getValueForPixel(mousePoint.x);
+        var y_loc = chart.scales['y-axis-0'].getValueForPixel(mousePoint.y);
         loc = {x: x_loc, y: y_loc};
         push_location(loc);
-        window.regress.update();
+        window.chart.update();
 
         compute_hypothesis();
     });
@@ -85,9 +92,9 @@ $(document).ready(function() {
 });
 
 function compute_hypothesis() {
-    if(regress_coords.x.length <= 1) return;
+    if(classify_set0_coords.length <= 1) return;
     theta = new Array(poly+1).fill(1);
-    var data = {"theta":theta,"X":regress_coords.x,"Y":regress_coords.y, "alpha":alpha, "num_iter":iterations, "poly": poly};
+    var data = {"theta":theta,"X":classify_set0_coords.x,"Y":classify_set0_coords.y, "alpha":alpha, "num_iter":iterations, "poly": poly};
     $.ajax({
         type: 'POST',
         url: $SCRIPT_ROOT + '/_gradient_descent',
@@ -111,8 +118,8 @@ function compute_hypothesis() {
             }
             console.log(theta);
             populate_hypothesis(h, theta, mu, sigma);
-            config.data.datasets[0].data = h;
-            window.regress.update();
+            classify_config.data.datasets[0].data = h;
+            window.chart.update();
         }
     });
 }
@@ -130,9 +137,9 @@ function populate_hypothesis(h, theta, mu, sigma){
 }
 
 function push_location(loc){
-    regress_coords.x.push(loc.x);
-    regress_coords.y.push(loc.y);
-    config.data.datasets[1].data.push(loc);
+    classify_set0_coords.x.push(loc.x);
+    classify_set0_coords.y.push(loc.y);
+    classify_config.config.data.datasets[1].data.push(loc);
 
-    window.regress.update();
+    window.chart.update();
 }
