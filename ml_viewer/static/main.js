@@ -1,12 +1,26 @@
 $(document).ready(function() {
-    var regress_canvas = $("#regress-plot");
-    var regress_config = {
+    var classifyLegendClickHandler = function(e, legendItem) {
+        var index = legendItem.datasetIndex;
+
+        classify.activeSet = index;
+    };
+
+    var classify_canvas = $("#classify-plot");
+    var classify_config = {
         type: 'line',
         data: {
             datasets: [
                 {
                     data: [],
-                    type: 'scatter'
+                    label: 'Set 1',
+                    type: 'scatter',
+                    pointStyle: 'circle',
+                },
+                {
+                    data: [],
+                    label: 'Set 2',
+                    type: 'scatter',
+                    pointStyle: 'cross',
                 },
                 {
                     data: [],
@@ -18,7 +32,8 @@ $(document).ready(function() {
             responsive: true,
             maintainAspectRatio: false,
             legend: {
-                display: false
+                display: true,
+                onClick: classifyLegendClickHandler
             },
             scales: {
                 xAxes: [{
@@ -46,20 +61,23 @@ $(document).ready(function() {
             },
         }
     };
-    var regress = new RegressPlot("regress",regress_config,regress_canvas);
+    var regress = new RegressPlot('regress-plot', 'regress-container');
+    var colors = ["red", "blue"];
+    var classify = new ClassifyPlot('classify-plot', 'classify-container', colors);
+    // var classify = new ClassifyPlot("classify",classify_config,classify_canvas);
 
     $('input[type=radio][name=polynomial]').change(function() {
         regress.poly = Number(this.value);
-        regress.computeHypothesis();
+        // regress.computeHypothesis();
     });
 
     $('#alpha').change(function() {
         regress.alpha = Number(this.value) / 100;
-        regress.computeHypothesis();
+        // regress.computeHypothesis();
     });
 
     $('#iters').change(function() {
         regress.iterations = Number(this.value);
-        regress.computeHypothesis();
+        // regress.computeHypothesis();
     });
 });

@@ -1,109 +1,31 @@
-var canvas = $("#classify-plot");
-var ctx = canvas[0].getContext("2d");
-var classify_set0_coords = {x: [], y: []};
-var classify_set1_coords = {x: [], y: []};
-var theta = [];
+function ClassifyPlot(name, config, canvas) {
+    ClickPlot.call(this, name, config, canvas, this.computeHypothesis);
 
-var classify_config = {
-    type: 'line',
-    data: {
-        datasets: [
-            {
-                data: [],
-                fill: false,
-            },
-            {
-                data: [],
-                type: 'scatter'
-            },
-            {
-                data: [],
-                type: 'scatter'
-            }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            display: false
-        },
-        scales: {
-            xAxes: [{
-                gridLines: {
-                    drawBorder: false,
-                },
-                type: 'linear',
-                ticks: {
-                    min: 0,
-                    max: 1000
-                }
-            }],
-            yAxes: [{
-                gridLines: {
-                    drawBorder: false,
-                },
-                ticks: {
-                    min: 0,
-                    max: 1000
-                }
-            }]
-        },
-        tooltips: {
-            enabled: false,
-        },
-    }
-};
+    this.coordinates = {x: [], y:[], value: []};
 
-var alpha = 0.15;
-var iterations = 10000;
-var poly = 1;
+    this.alpha = 0.25;
+    this.iterations = 2500;
+    this.poly = 1;
+    this.activeSet = 0;
+}
 
-$(document).ready(function() {
-    console.log("2");
+ClassifyPlot.prototype = Object.create(ClickPlot.prototype);
 
-    window.chart = new Chart(ctx, classify_config);
-    window.chart.update();
-
-    canvas.click(function(e) {
-        mousePoint = Chart.helpers.getRelativePosition(e, chart);
-        var x_loc = chart.scales['x-axis-0'].getValueForPixel(mousePoint.x);
-        var y_loc = chart.scales['y-axis-0'].getValueForPixel(mousePoint.y);
-        loc = {x: x_loc, y: y_loc};
-        push_location(loc);
-        window.chart.update();
-
-        compute_hypothesis();
-    });
-
-    $('input[type=radio][name=polynomial]').change(function() {
-        poly = Number(this.value);
-        compute_hypothesis();
-    });
-
-    $('#alpha').change(function() {
-        alpha = Number(this.value) / 100;
-        compute_hypothesis();
-    });
-
-    $('#iters').change(function() {
-        iterations = Number(this.value);
-        compute_hypothesis();
-    });
-});
-
-function compute_hypothesis() {
-    if(classify_set0_coords.length <= 1) return;
-    theta = new Array(poly+1).fill(1);
-    var data = {"theta":theta,"X":classify_set0_coords.x,"Y":classify_set0_coords.y, "alpha":alpha, "num_iter":iterations, "poly": poly};
+ClassifyPlot.prototype.computeHypothesis = function() {
+    var x = this.x();
+    var y = this.y();
+    if(x.length <= 1) return;
+    var self = this;
+    theta = new Array(this.poly*2+1).fill(1);
+    var data = {"theta":theta,"X": x,"Y": y, "alpha": this.alpha, "num_iter": this.iterations, "poly": this.poly};
     $.ajax({
         type: 'POST',
-        url: $SCRIPT_ROOT + '/_gradient_descent',
+        url: $SCRIPT_ROOT + '/_log_regress',
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(data),
         cache: false,
         success: function(result) {
-            var h = [];
             var theta = [];
             for(var t = 0; t < result.theta.length; t++) {
                 theta.push(parseFloat(result.theta[t]));
@@ -116,15 +38,13 @@ function compute_hypothesis() {
             for(var m = 0; m < result.mu.length; m++) {
                 mu.push(parseFloat(result.mu[m]));
             }
-            console.log(theta);
-            populate_hypothesis(h, theta, mu, sigma);
-            classify_config.data.datasets[0].data = h;
-            window.chart.update();
+            self.populateHypothesis(theta, mu, sigma);
         }
     });
-}
+};
 
-function populate_hypothesis(h, theta, mu, sigma){
+ClassifyPlot.prototype.populateHypothesis = function(theta, mu, sigma) {
+    var h = [];
     for(i = 0; i < 100; i++) {
         var x = (10*i);
         var y = theta[0];
@@ -133,13 +53,22 @@ function populate_hypothesis(h, theta, mu, sigma){
         }
         h.push({x: x, y: y});
     }
-    return h;
-}
 
-function push_location(loc){
-    classify_set0_coords.x.push(loc.x);
-    classify_set0_coords.y.push(loc.y);
-    classify_config.config.data.datasets[1].data.push(loc);
+    this.config.data.datasets[this.config.data.datasets.length - 1].data = h;
+    this.chart.update();
+};
 
-    window.chart.update();
-}
+ClassifyPlot.prototype.x = function() {
+    var x = [this.coordinates.x,this.coordinates.y];
+    return x;
+};
+
+ClassifyPlot.prototype.y = function() {
+    return this.coordinates.value;
+};
+
+Object.defineProperty(ClassifyPlot.prototype, 'constructor', {
+    value: ClassifyPlot,
+    enumerable: false, // so that it does not appear in 'for in' loop
+    writable: true
+});

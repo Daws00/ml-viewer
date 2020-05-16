@@ -9,10 +9,10 @@ function RegressPlot(name, config, canvas) {
 RegressPlot.prototype = Object.create(ClickPlot.prototype);
 
 RegressPlot.prototype.computeHypothesis = function() {
-    var self = this;
-    var x = this.coordinates[0].x;
-    var y = this.coordinates[0].y;
+    var x = this.x();
+    var y = this.y();
     if(x.length <= 1) return;
+    var self = this;
     theta = new Array(this.poly+1).fill(1);
     var data = {"theta":theta,"X": x,"Y": y, "alpha": this.alpha, "num_iter": this.iterations, "poly": this.poly};
     $.ajax({
@@ -53,14 +53,20 @@ RegressPlot.prototype.populateHypothesis = function(theta, mu, sigma) {
         h.push({x: x, y: y});
     }
 
-    this.config.data.datasets[1].data = h;
+    this.config.data.datasets[this.config.data.datasets.length - 1].data = h;
     this.chart.update();
 };
 
 RegressPlot.prototype.x = function() {
-    return this.coordinates[0].x;
+    return this.coordinates.x;
 };
 
 RegressPlot.prototype.y = function() {
-    return this.coordinates[0].y;
+    return this.coordinates.y;
 };
+
+Object.defineProperty(RegressPlot.prototype, 'constructor', {
+    value: RegressPlot,
+    enumerable: false, // so that it does not appear in 'for in' loop
+    writable: true
+});
